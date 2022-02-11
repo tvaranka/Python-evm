@@ -152,7 +152,7 @@ def _magnify(video, alpha, lambda_c, r1, r2, n_levels):
     # change video back to original size
     _, out_H, out_W, _ = _shape(output_video)
     if out_H != H or out_W != W:
-        output_video = resize(video, (F, H, W, C))
+        output_video = resize(output_video, (F, H, W, C))
     if output_video.shape[-1] == 1:
         output_video = output_video[..., 0]
     return output_video
@@ -169,7 +169,7 @@ def _preprocess(video):
     video = np.array(video) if isinstance(video, torch.Tensor) else video
     video = video if video.dtype == np.float32 or video.dtype == np.float64 else video.astype(
         np.float32)
-    video = video / 255.0 if video.max() == 255 else video
+    video = video / 255.0 if video.max() > 1 else video
     return video
 
 
@@ -298,6 +298,4 @@ def _reconstruct_laplacian(pyr):
         pyr[1] if C == 3 else resize(pyr[0], (W, H)) + pyr[1]
     for i in range(1, n_levels - 1):
         frame = cv2.pyrUp(frame) + pyr[i + 1]
-    #if C == 1:
-    #    frame = np.expand_dims(frame, -1)
     return frame
