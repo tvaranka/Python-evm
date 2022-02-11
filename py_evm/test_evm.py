@@ -29,6 +29,11 @@ class TestEVM(unittest.TestCase):
         video = np.ones((2, 256, 256))
         mm_video = py_evm.magnify(video)
         self.assertEqual(mm_video.sum(), video.sum())
+        
+    def test_gray_scale_weird_size(self):
+        video = np.ones((3, 55, 89))
+        mm_video = py_evm.magnify(video)
+        self.assertEqual(mm_video.sum(), video.sum())
     
     
 if __name__ == '__main__':

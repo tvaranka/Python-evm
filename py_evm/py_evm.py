@@ -113,7 +113,7 @@ def _magnify(video, alpha, lambda_c, r1, r2, n_levels):
     if H % divisor != 0 or W % divisor != 0:
         new_H = H + divisor - H % divisor
         new_W = W + divisor - W % divisor
-        video = resize(video, (F, new_H, new_W, C))
+        video = resize(video, (F, new_H, new_W, C)) if C == 3 else resize(video, (F, new_H, new_W))
 
     frame = video[0]
     output_video = np.zeros_like(video)
@@ -121,7 +121,7 @@ def _magnify(video, alpha, lambda_c, r1, r2, n_levels):
     pyr = _laplacian_pyramid(frame, n_levels)
     lowpass1 = pyr
     lowpass2 = pyr
-
+    
     for i in range(1, F):
         pyr = _laplacian_pyramid(video[i], n_levels)
         lowpass1 = [r1 * pyr[k] + (1 - r1) * lowpass1[k]
@@ -150,9 +150,11 @@ def _magnify(video, alpha, lambda_c, r1, r2, n_levels):
     output_video[output_video > 1] = 1
 
     # change video back to original size
-    out_F, out_H, out_W, out_C = _shape(video)
+    _, out_H, out_W, _ = _shape(output_video)
     if out_H != H or out_W != W:
         output_video = resize(video, (F, H, W, C))
+    if output_video.shape[-1] == 1:
+        output_video = output_video[..., 0]
     return output_video
 
 
@@ -264,7 +266,9 @@ def _save_directory(video, folder_path):
 
 
 def _shape(frame):
-    if frame.shape[-1] == 3:
+    if frame.shape[-1] == 3 and len(frame.shape) >= 3:
+        return frame.shape
+    elif frame.shape[-1] == 1:
         return frame.shape
     else:
         return frame.shape + (1, )
@@ -291,7 +295,9 @@ def _reconstruct_laplacian(pyr):
     n_levels = len(pyr)
     W, H, C = _shape(pyr[1])
     frame = resize(pyr[0], (W, H, C)) + \
-        pyr[1] if C == 3 else resize(pyr[0], (W, H)) + pyr[1][..., 0]
+        pyr[1] if C == 3 else resize(pyr[0], (W, H)) + pyr[1]
     for i in range(1, n_levels - 1):
         frame = cv2.pyrUp(frame) + pyr[i + 1]
+    #if C == 1:
+    #    frame = np.expand_dims(frame, -1)
     return frame
