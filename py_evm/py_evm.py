@@ -291,7 +291,7 @@ def _reconstruct_laplacian(pyr):
     n_levels = len(pyr)
     W, H, C = _shape(pyr[1])
     frame = resize(pyr[0], (W, H, C)) + \
-        pyr[1] if C == 1 else resize(pyr[0], (W, H)) + pyr[1]
+        pyr[1] if C == 3 else resize(pyr[0], (W, H)) + pyr[1][..., 0]
     for i in range(1, n_levels - 1):
         frame = cv2.pyrUp(frame) + pyr[i + 1]
     return frame
