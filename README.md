@@ -14,20 +14,20 @@
  A simple example of loading a video, magnifying it and saving it.
  ```python
 import py_evm
-video = load_video("data/baby.mp4")
-mm_video = magnify(video)
-save_video(mm_video, "mm_baby")
+video = py_evm.load_video("data/baby.mp4")
+mm_video = py_evm.magnify(video)
+py_evm.save_video(mm_video, "mm_baby")
 ```
 Do it all in one line.
  ```python
 import py_evm
-magnify("data/baby.mp4")
+py_evm.magnify("data/baby.mp4")
 ```
 Change the parameters and use the motion magnified video in down stream tasks such as video analysis using neural networks.
  ```python
 import py_evm
-video = load_video("data/baby.mp4")
-mm_video = magnify(video, alpha=30, r1=0.4, r2=0.04)
+video = py_evm.load_video("data/baby.mp4")
+mm_video = py_evm.magnify(video, alpha=30, r1=0.4, r2=0.04)
 .
 .
 .
