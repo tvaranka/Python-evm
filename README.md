@@ -1,5 +1,5 @@
 # Python evm
-![example workflow](https://github.com/tvaranka/Python-evm/actions/.github/workflows/Python%20application/badge.svg)
+![example workflow](https://github.com/tvaranka/Python-evm/workflows/Python%20application/badge.svg)
 
  An easy to use Python API for EVM (Eulerian Video Magnification). Also known as motion magnification.
  <div align="center">
